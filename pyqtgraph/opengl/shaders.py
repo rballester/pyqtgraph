@@ -111,6 +111,31 @@ def initShaders():
                 }
             """)
         ]),
+
+        ShaderProgram('rafa', [
+            VertexShader("""
+            varying vec3 normal;
+            void main() {
+                // compute here for use in fragment shader
+                normal = normalize(gl_NormalMatrix * gl_Normal);
+                gl_FrontColor = gl_Color;
+                gl_BackColor = gl_Color;
+                gl_Position = ftransform();
+            }
+        """),
+            FragmentShader("""
+            varying vec3 normal;
+            void main() {
+                float p = dot(normal, normalize(vec3(1.0, -1.0, -1.0)));
+                p = abs(p) * 0.8;
+                vec4 color = gl_Color;
+                color.x = color.x * (0.4 + p);
+                color.y = color.y * (0.4 + p);
+                color.z = color.z * (0.4 + p);
+                gl_FragColor = color;
+            }
+        """)
+        ]),
         
         ## colors get brighter near edges of object
         ShaderProgram('edgeHilight', [   
@@ -135,6 +160,29 @@ def initShaders():
                     gl_FragColor = color;
                 }
             """)
+        ]),
+        ShaderProgram('rafa2', [
+            VertexShader("""
+            varying vec3 normal;
+            void main() {
+                // compute here for use in fragment shader
+                normal = normalize(gl_NormalMatrix * gl_Normal);
+                gl_FrontColor = gl_Color;
+                gl_BackColor = gl_Color;
+                gl_Position = ftransform();
+            }
+        """),
+            FragmentShader("""
+            varying vec3 normal;
+            void main() {
+                vec4 color = gl_Color;
+                float s = pow(normal.x*normal.x + normal.y*normal.y, 2);
+                color.x = color.x + s * (0.+color.x);
+                color.y = color.y + s * (0.+color.y);
+                color.z = color.z + s * (0.+color.z);
+                gl_FragColor = color;
+            }
+        """)
         ]),
         
         ## colors fragments by z-value.
